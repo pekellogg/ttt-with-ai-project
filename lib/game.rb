@@ -1,12 +1,19 @@
 require 'pry'
 class Game
-    class InvalidInputSelectionError < StandardError; end
+    # class InvalidInputSelectionError < StandardError; end
 
     # add in final project version as test suite allows
     # @@all = []
-
     # def self.all
     #     @@all
+    # end
+
+    # consider integrating in below code for user XP as test suite allows
+    # begin
+    #     raise InvalidInputSelectionError.new("Invalid selection. Please choose a valid option.")
+    # rescue InvalidInputSelectionError => e
+    #     puts e.message
+    #     self.turn
     # end
 
     attr_accessor :board, :player_1, :player_2
@@ -32,35 +39,22 @@ class Game
 
     def play
         until self.over?
-            self.turn
+          self.turn
         end
-        case self.over?
-        when true
-            if self.draw?
-                puts "Cat's Game!"
-            elsif self.won? != false
-                puts "Congratulations #{self.winner}!"
-            end
-        when false
-            if self.turn == "invalid"
-                begin
-                    raise InvalidInputSelectionError.new("Invalid selection. Please choose a valid option.")
-                rescue InvalidInputSelectionError => e
-                    puts e.message
-                    self.turn
-                end
-            end
+        if self.won?
+          puts "Congratulations #{winner}!"
+        elsif self.draw?
+          puts "Cat's Game!"
         end
     end
 
     def turn
-        puts "Please enter 1-9:"
-        input = self.current_player.input
-        if self.board.valid_move?(input)
-            self.board.update(input, self.current_player) # learned to be consistent when passing obj vs obj.attr; obj might be preferred
+        selection = self.current_player.move(self.board)
+        if self.board.valid_move?(selection)
+            self.board.update(selection, self.current_player) # learned to be consistent when passing obj vs obj.attr; obj might be preferred
             self.board.display
         else
-            "invalid"
+            self.turn
         end
     end
 
@@ -82,23 +76,16 @@ class Game
     end
 
     def won?
-        WIN_COMBINATIONS.each do |combination|
-            p1 = self.board.cells[combination[0]]
-            p2 = self.board.cells[combination[1]]
-            p3 = self.board.cells[combination[2]]
-            matching = ((p1 == p2) && (p2 == p3))
-            if self.board.taken?(combination.first) && matching
-                return combination
-            end
+        WIN_COMBINATIONS.detect do |combination|
+            self.board.cells[combination[0]] == self.board.cells[combination[1]] &&
+            self.board.cells[combination[1]] == self.board.cells[combination[2]] &&
+            self.board.taken?(combination[2]) # self.board.taken?(combination[0]+1) ? try this next
         end
-        false
     end
 
     def winner
-        if self.over? && self.won? != false
-            self.board.cells[self.won?.first]
-        else
-            nil
+        if self.won?
+            @winner = self.board.cells[self.won?.first]
         end
     end
 end
