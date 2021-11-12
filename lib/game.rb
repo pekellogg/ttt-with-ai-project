@@ -79,12 +79,13 @@ class Game
         WIN_COMBINATIONS.detect do |combination|
             self.board.cells[combination[0]] == self.board.cells[combination[1]] &&
             self.board.cells[combination[1]] == self.board.cells[combination[2]] &&
-            self.board.taken?(combination[2]) # self.board.taken?(combination[0]+1) ? try this next
+            self.board.taken?(combination[2] + 1) 
         end
+
     end
 
     def winner
-        if self.won?
+        if self.won? != nil
             @winner = self.board.cells[self.won?.first]
         end
     end
