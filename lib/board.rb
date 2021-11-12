@@ -1,10 +1,11 @@
 require "pry"
 class Board
-    @@all = []
+    # add as test suite allows
+    # @@all = []
     
-    def self.all
-        @@all
-    end
+    # def self.all
+    #     @@all
+    # end
     
     attr_accessor :cells
 
@@ -15,11 +16,10 @@ class Board
     def reset!
         @cells = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
     end
-
-    # use at end of game to store completed board (if possible, per FI test suite)
-    def save
-        self.class.all << self
-    end
+    # add as test suite allows
+    # def save
+    #     self.class.all << self
+    # end
 
     def display
         puts " #{self.cells[0]} | #{self.cells[1]} | #{self.cells[2]} "
@@ -33,12 +33,8 @@ class Board
         input.to_i - 1
     end
 
-    def clean(input)
-        (input.class == Integer) ? input : (self.input_to_index(input))
-    end
-
     def position(input)
-        self.cells[self.clean(input)]
+        self.cells[input_to_index(input)]
     end
 
     def full?
@@ -55,24 +51,11 @@ class Board
         self.position(input) != " "
     end
 
-    # valid == not occupied and user input between 0...8
     def valid_move?(input)
-        cleaned = self.clean(input)
-        !self.taken?(cleaned) && cleaned.between?(0, 8)
+        input.to_i.between?(1,9) && !self.taken?(input)
     end
 
-    def update(input, current_player = "X")
-        i = self.clean(input)
-        if self.valid_move?(i)
-            self.cells[i] = current_player.token
-        else
-            self.invalid_move(current_player)
-        end     
-    end
-
-    def invalid_move(current_player)
-        puts "Please enter a valid selection."
-        valid = gets.chomp
-        self.update(valid, current_player)
+    def update(input, current_player)
+        self.cells[self.input_to_index(input)] = current_player.token
     end
 end

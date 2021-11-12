@@ -34,36 +34,34 @@ class Game
         until self.over?
             self.turn
         end
-        if self.won?
-            puts "Congratulations #{self.winner}!"
-        elsif self.draw?
-            puts "Cat's Game!"
+        case self.over?
+        when true
+            if self.draw?
+                puts "Cat's Game!"
+            elsif self.won? != false
+                puts "Congratulations #{self.winner}!"
+            end
+        when false
+            if self.turn == "invalid"
+                begin
+                    raise InvalidInputSelectionError.new("Invalid selection. Please choose a valid option.")
+                rescue InvalidInputSelectionError => e
+                    puts e.message
+                    self.turn
+                end
+            end
         end
     end
 
     def turn
         puts "Please enter 1-9:"
         input = self.current_player.input
-        i = self.board.clean(input)
-        if self.valid_move?(i)
-            self.move(i, self.current_player) # pass obj or obj.attr? #=> self.current_player vs. self.current_player.token
+        if self.board.valid_move?(input)
+            self.board.update(input, self.current_player) # learned to be consistent when passing obj vs obj.attr; obj might be preferred
             self.board.display
         else
-            begin
-                raise InvalidInputSelectionError.new("invalid")
-            rescue InvalidInputSelectionError => e
-                puts e.message
-                self.turn
-            end
+            "invalid"
         end
-    end
-
-    def valid_move?(index)
-        index.between?(0,8) && !self.board.taken?(index)
-    end
-
-    def move(index, player_token = "X")
-        self.board.cells[index] = self.current_player.token
     end
 
     def current_player
@@ -97,9 +95,10 @@ class Game
     end
 
     def winner
-        self.won? ? self.board.cells[self.won?.first] : nil
+        if self.over? && self.won? != false
+            self.board.cells[self.won?.first]
+        else
+            nil
+        end
     end
 end
-
-# game = Game.new
-# game.start
