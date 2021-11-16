@@ -1,12 +1,4 @@
-require "pry"
 class Board
-    # add as test suite allows
-    # @@all = []
-    
-    # def self.all
-    #     @@all
-    # end
-    
     attr_accessor :cells
 
     def initialize
@@ -16,10 +8,6 @@ class Board
     def reset!
         @cells = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
     end
-    # add as test suite allows
-    # def save
-    #     self.class.all << self
-    # end
 
     def display
         puts " #{self.cells[0]} | #{self.cells[1]} | #{self.cells[2]} "

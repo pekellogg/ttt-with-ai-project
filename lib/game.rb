@@ -1,21 +1,4 @@
-require 'pry'
 class Game
-    # class InvalidInputSelectionError < StandardError; end
-
-    # add in final project version as test suite allows
-    # @@all = []
-    # def self.all
-    #     @@all
-    # end
-
-    # consider integrating in below code for user XP as test suite allows
-    # begin
-    #     raise InvalidInputSelectionError.new("Invalid selection. Please choose a valid option.")
-    # rescue InvalidInputSelectionError => e
-    #     puts e.message
-    #     self.turn
-    # end
-
     attr_accessor :board, :player_1, :player_2
 
     def initialize(player_1 = Players::Human.new("X"), player_2 = Players::Human.new("O"), board = Board.new)
@@ -33,7 +16,31 @@ class Game
         [0, 4, 8] # diagonal win 2
     ]
 
+    def welcome
+        puts "Hello! Please choose who to play Tic Tac Toe with."
+        puts "0: I want to be a spectator and watch the computer play against itself."
+        puts "1: I want to test my Tic Tac Toe skills against the computer."
+        puts "2: I want to play a human friend."
+        # player_mode(gets.chomp)
+    end
+
+    # def player_mode(input)
+    #     case input
+    #     when 0
+    #         Game.new(Players::Computer.new("X"), Players::Computer.new("O"))
+    #     when 1
+    #         puts "Would you like to go first and be player X? Y/N"
+    #         case gets.chomp
+    #         when "Y" || "y"
+    #             Game.new(Players::Human.new("X"), Players::Computer.new("O"))
+    #         end
+    #     when 2
+
+    #     end
+    # end
+
     def start
+
         self.play
     end
 
@@ -42,7 +49,7 @@ class Game
           self.turn
         end
         if self.won?
-          puts "Congratulations #{winner}!"
+          puts "Congratulations #{self.winner}!"
         elsif self.draw?
           puts "Cat's Game!"
         end
@@ -81,7 +88,6 @@ class Game
             self.board.cells[combination[1]] == self.board.cells[combination[2]] &&
             self.board.taken?(combination[2] + 1) 
         end
-
     end
 
     def winner
